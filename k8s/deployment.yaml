@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: edukita-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: edukita-backend
+  template:
+    metadata:
+      labels:
+        app: edukita-backend
+    spec:
+      containers:
+        - name: edukita-backend
+          image: edukita-backend:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: DATABASE_URL
+              value: "sqlite://db.sqlite"
