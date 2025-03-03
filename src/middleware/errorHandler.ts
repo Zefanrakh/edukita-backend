@@ -1,5 +1,20 @@
 import { Request, Response, NextFunction } from "express";
 
+/**
+ * Global error-handling middleware for Express applications.
+ *
+ * Logs the error stack and returns an appropriate HTTP response.
+ * Handles specific database constraint errors (`SQLITE_CONSTRAINT`, `23505`) by setting status code to 409.
+ * Adjusts status code for unauthorized errors.
+ *
+ * @param {any} err - The error object.
+ * @param {Request} req - The Express request object.
+ * @param {Response} res - The Express response object.
+ * @param {NextFunction} next - The Express next function.
+ *
+ * @example
+ * app.use(errorHandler);
+ */
 export function errorHandler(
   err: any,
   req: Request,

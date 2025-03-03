@@ -12,14 +12,22 @@ import { Role } from "../entities/user";
 const authService = new AuthService();
 const userService = new UserService();
 
-export function getUsers(_: Request, response: Response) {
-  response.send([]);
-}
-
-export function getUserById(_: Request, response: Response) {
-  response.send({});
-}
-
+/**
+ * Creates a new user.
+ *
+ * - Validates the request body using `CreateUserDto`.
+ * - Throws validation errors if any.
+ * - Calls `authService.registerUser()` to register the user.
+ *
+ * @param {Request<{}, {}, CreateUserDto, CreateUserQueryParams>} request - Express request object containing user registration data.
+ * @param {Response<ReadUserDto>} response - Express response object containing the created user data.
+ * @param {NextFunction} next - Express next function for error handling.
+ *
+ * @returns {Promise<void>} Responds with the newly created user data.
+ *
+ * @example
+ * app.post("/users", createUser);
+ */
 export async function createUser(
   request: Request<{}, {}, CreateUserDto, CreateUserQueryParams>,
   response: Response<ReadUserDto>,
@@ -37,6 +45,20 @@ export async function createUser(
   }
 }
 
+/**
+ * Retrieves a list of all students.
+ *
+ * - Calls `userService.find()` to fetch users with the role `Student`.
+ *
+ * @param {Request} request - Express request object.
+ * @param {Response<ReadUserDto[]>} response - Express response object containing the list of students.
+ * @param {NextFunction} next - Express next function for error handling.
+ *
+ * @returns {Promise<void>} Responds with a list of students.
+ *
+ * @example
+ * app.get("/students", getAllStudents);
+ */
 export async function getAllStudents(
   request: Request,
   response: Response<ReadUserDto[]>,

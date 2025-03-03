@@ -9,6 +9,22 @@ import { GetAssignmentsByStudentParamDto } from "../dtos/assignments/GetAssignme
 
 const assignmentService = new AssignmentService();
 
+/**
+ * Submits an assignment.
+ *
+ * - Validates the request body against `SubmitAssignmentDto`.
+ * - Throws validation errors if any.
+ * - Calls the service to submit the assignment.
+ *
+ * @param {Request} request - Express request object containing the assignment data in `body`.
+ * @param {Response} response - Express response object.
+ * @param {NextFunction} next - Express next function for error handling.
+ *
+ * @returns {Promise<void>} Responds with the newly created assignment.
+ *
+ * @example
+ * app.post("/assignments", submitAssignment);
+ */
 export async function submitAssignment(
   request: Request,
   response: Response,
@@ -26,6 +42,21 @@ export async function submitAssignment(
   }
 }
 
+/**
+ * Retrieves a paginated list of assignments based on query parameters.
+ *
+ * - Converts query parameters into an instance of `GetAssignmentsQueryDto`.
+ * - Calls the service to fetch assignments.
+ *
+ * @param {Request<{}, {}, {}, GetAssignmentsQueryDto>} request - Express request object with query parameters.
+ * @param {Response} response - Express response object.
+ * @param {NextFunction} next - Express next function for error handling.
+ *
+ * @returns {Promise<void>} Responds with a paginated list of assignments.
+ *
+ * @example
+ * app.get("/assignments", getAssignments);
+ */
 export async function getAssignments(
   request: Request<{}, {}, {}, GetAssignmentsQueryDto>,
   response: Response,
@@ -41,6 +72,22 @@ export async function getAssignments(
   }
 }
 
+/**
+ * Retrieves a paginated list of assignments for a specific student.
+ *
+ * - Converts `studentId` from params into an instance of `GetAssignmentsByStudentParamDto`.
+ * - Converts query parameters into an instance of `GetAssignmentsQueryDto`.
+ * - Calls the service to fetch assignments for the given student.
+ *
+ * @param {Request<GetAssignmentsByStudentParamDto, {}, {}, GetAssignmentsQueryDto>} request - Express request object with student ID in `params` and query parameters.
+ * @param {Response} response - Express response object.
+ * @param {NextFunction} next - Express next function for error handling.
+ *
+ * @returns {Promise<void>} Responds with a paginated list of assignments for the given student.
+ *
+ * @example
+ * app.get("/students/:studentId/assignments", getAssignmentsByStudent);
+ */
 export async function getAssignmentsByStudent(
   request: Request<
     GetAssignmentsByStudentParamDto,

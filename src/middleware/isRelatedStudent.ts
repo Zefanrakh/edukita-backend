@@ -4,6 +4,21 @@ import { GetAssignmentsQueryDto } from "../dtos/assignments/GetAssignmentsQuery.
 import { GetGradesByStudentParamDto } from "../dtos/assignments/GetGradesByStudentParam.dto";
 import { GetAssignmentsByStudentParamDto } from "../dtos/assignments/GetAssignmentsByStudentParam.dto";
 
+/**
+ * Middleware to check if the authenticated user is either a teacher
+ * or the student related to the requested resource.
+ *
+ * Ensures that:
+ * - A teacher can access any student's data.
+ * - A student can only access their own data.
+ *
+ * @returns {(req: Request<GetGradesByStudentParamDto | GetAssignmentsByStudentParamDto, {}, {}, GetAssignmentsQueryDto | {}>, res: Response, next: NextFunction) => void} Middleware function.
+ *
+ * @example
+ * app.get("/students/:studentId/grades", isRelatedStudent(), (req, res) => {
+ *   res.send("You have access to these grades.");
+ * });
+ */
 export function isRelatedStudent() {
   return (
     req: Request<
