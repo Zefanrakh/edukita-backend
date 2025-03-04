@@ -2,6 +2,8 @@ import { FindManyOptions, FindOneOptions, FindOptionsWhere } from "typeorm";
 import { CreateUserDto } from "../dtos/users/CreateUser.dto";
 import { User } from "../entities/user";
 import { userRepository } from "../repositories/userRepository";
+import { CreateUserQueryParams } from "../types/query-params";
+import { Request } from "express-serve-static-core";
 
 export class UserService {
   private userRepository = userRepository;
@@ -11,9 +13,13 @@ export class UserService {
    * @param {CreateUserDto} payload - Data for creating the user.
    * @returns {Promise<User>} The created user.
    */
-  async create(payload: CreateUserDto): Promise<User> {
+  async create(
+    request: Request<{}, {}, CreateUserDto, CreateUserQueryParams>,
+    payload: CreateUserDto
+  ): Promise<User> {
+    const queryRunner = request.queryRunner;
     const user = this.userRepository.create(payload);
-    return await this.userRepository.save(user);
+    return await queryRunner.manager.save(user);
   }
 
   /**

@@ -38,7 +38,7 @@ export async function createUser(
     const validationErrors = await validate(createUserDto);
     throwIfAnyDtoValidationErrors(validationErrors);
 
-    const user = await authService.registerUser(createUserDto);
+    const user = await authService.registerUser(request, createUserDto);
     response.status(201).json(instanceToPlain(user) as ReadUserDto);
   } catch (error: any) {
     next(error);

@@ -15,7 +15,7 @@ import { Request, Response, NextFunction } from "express";
  * @example
  * app.use(errorHandler);
  */
-export function errorHandler(
+export async function errorHandler(
   err: any,
   req: Request,
   res: Response,
@@ -32,6 +32,8 @@ export function errorHandler(
   if (message === "Unauthorized") {
     statusCode = 401;
   }
+
+  await req.queryRunner?.rollbackTransaction();
 
   res
     .status(statusCode)

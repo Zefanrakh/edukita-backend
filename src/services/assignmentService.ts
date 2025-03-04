@@ -24,7 +24,7 @@ export class AssignmentService extends PaginationService<AssignmentService> {
 
     const student = request.user as User;
 
-    return await this.create({
+    return await this.create(request, {
       subject,
       title,
       content,
@@ -38,10 +38,15 @@ export class AssignmentService extends PaginationService<AssignmentService> {
    * @returns {Promise<Assignment>} The created assignment.
    */
   async create(
+    request: Request<{}, {}, SubmitAssignmentDto>,
     payload: SubmitAssignmentDto & { student: User }
   ): Promise<Assignment> {
+    const queryRunner = request.queryRunner;
     const assignment = this.assignmentRepository.create(payload);
-    return await this.assignmentRepository.save(assignment);
+    const assignmentSaved = await queryRunner.manager.save(assignment);
+    await request.queryRunner.commitTransaction();
+
+    return assignmentSaved;
   }
 
   /**

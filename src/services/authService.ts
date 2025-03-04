@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import { UserService } from "./userService";
 import { CreateUserDto } from "../dtos/users/CreateUser.dto";
 import { GetAuthorizedUserDto } from "../dtos/users/GetAuthorizedUser.dto";
+import { Request } from "express-serve-static-core";
+import { CreateUserQueryParams } from "../types/query-params";
 
 const userService = new UserService();
 
@@ -27,12 +29,15 @@ export class AuthService {
     return { token, user };
   }
 
-  async registerUser(createUserDto: CreateUserDto) {
+  async registerUser(
+    request: Request<{}, {}, CreateUserDto, CreateUserQueryParams>,
+    createUserDto: CreateUserDto
+  ) {
     if (createUserDto.password) {
       createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
     }
 
-    const user = await userService.create(createUserDto);
+    const user = await userService.create(request, createUserDto);
     return user;
   }
 }

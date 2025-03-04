@@ -140,7 +140,6 @@ export async function gradeAndFeedbackWithAi(
     const recommendation = await gradeService.gradeAndFeedbackWithAi(
       paramDto.assignmentId
     );
-    console.log({ recommendation });
     response.json(recommendation);
   } catch (error) {
     next(error);

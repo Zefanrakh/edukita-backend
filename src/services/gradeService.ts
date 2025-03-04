@@ -9,7 +9,6 @@ import { AssignmentService } from "./assignmentService";
 import { Brackets, FindManyOptions } from "typeorm";
 import { ReadPaginationContainerDto } from "../dtos/pagination/ReadPagination.dto";
 import { GetGradesQueryDto } from "../dtos/assignments/GetGradesQuery.dto";
-import { GradeRecommendationWithAiParamDto } from "../dtos/grades/GradeRecommendationWithAiParam.dto";
 import { ReadRecommendationWithAiDto } from "../dtos/grades/ReadRecommendationWithAi.dto";
 const OpenAI = require("openai-free");
 const openai = new OpenAI();
@@ -33,7 +32,7 @@ export class GradeService extends PaginationService<GradeService> {
     const teacher = request.user as User;
     const assignment = await this.assignmentService.findById(assignmentId);
 
-    return await this.upsertOne({
+    return await this.upsertOne(request, {
       grade,
       feedback,
       assignment,
@@ -47,13 +46,15 @@ export class GradeService extends PaginationService<GradeService> {
    * @returns {Promise<Grade>} The created grade.
    */
   async create(
+    request: Request,
     payload: Partial<GradeAssignmentDto> & {
       teacher: User;
       assignment: Assignment;
     }
   ): Promise<Grade> {
+    const queryRunner = request.queryRunner;
     const assignment = this.gradeRepository.create(payload);
-    return await this.gradeRepository.save(assignment);
+    return await queryRunner.manager.save(assignment);
   }
 
   /**
@@ -72,14 +73,26 @@ export class GradeService extends PaginationService<GradeService> {
    * @returns {Promise<Grade>} The upserted grade.
    */
   async upsertOne(
+    request: Request<{}, {}, GradeAssignmentDto>,
     payload: Partial<GradeAssignmentDto> & {
       teacher: User;
       assignment: Assignment;
     }
   ) {
-    const grade = (await this.gradeRepository.upsert(payload, ["assignment"]))
-      .generatedMaps;
-    return grade[0] as Grade;
+    const queryRunner = request.queryRunner;
+    let grade = await queryRunner.manager.findOne(Grade, {
+      where: { assignment: payload.assignment },
+    });
+
+    if (grade) {
+      Object.assign(grade, payload);
+    } else {
+      grade = queryRunner.manager.create(Grade, payload);
+    }
+
+    await queryRunner.manager.save(grade);
+    await queryRunner.commitTransaction();
+    return grade;
   }
 
   /**
