@@ -7,7 +7,7 @@ const AppDataSource = new DataSource({
   type: "sqlite",
   database: ":memory",
   synchronize: true,
-  logging: true,
+  logging: false,
   entities: [User, Assignment, Grade],
   migrations: ["./src/migrations/*{.ts,.js}"],
 });

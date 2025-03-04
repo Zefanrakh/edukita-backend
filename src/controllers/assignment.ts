@@ -6,8 +6,11 @@ import { validate } from "class-validator";
 import { throwIfAnyDtoValidationErrors } from "../utils/throwValidationError";
 import { GetAssignmentsQueryDto } from "../dtos/assignments/GetAssignmentsQuery.dto";
 import { GetAssignmentsByStudentParamDto } from "../dtos/assignments/GetAssignmentsByStudentParam.dto";
+import { NotificationService } from "../services/notificationService";
+import { User } from "../entities/user";
 
 const assignmentService = new AssignmentService();
+const notificationService = new NotificationService();
 
 /**
  * Submits an assignment.
@@ -36,6 +39,11 @@ export async function submitAssignment(
     throwIfAnyDtoValidationErrors(validationErrors);
 
     const newAssignment = await assignmentService.submitAssignement(request);
+
+    const student = request.user as User;
+    if (newAssignment) {
+      await notificationService.notifyTeacher(newAssignment, student);
+    }
     response.status(201).json(newAssignment);
   } catch (error) {
     next(error);

@@ -9,9 +9,12 @@
     "start:dev": "nodemon ./src/index.ts",
     "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js",
     "migration:generate": "npm run typeorm -- migration:generate --dataSource ./src/config/database.ts",
-    "migration:run": "npm run typeorm -- migration:run --dataSource ./src/config/database.ts"
+    "migration:run": "npm run typeorm -- migration:run --dataSource ./src/config/database.ts",
+    "workers:start": "node ./dist/workers/notification.js",
+    "workers:start:dev": "ts-node ./src/workers/notification.ts"
   },
   "dependencies": {
+    "@types/nodemailer": "^6.4.17",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
@@ -19,13 +22,17 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
+    "ioredis": "^5.5.0",
     "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^6.10.0",
     "openai-free": "^1.0.1",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
+    "redis": "^4.7.0",
     "reflect-metadata": "^0.2.2",
     "sqlite3": "^5.1.7",
-    "typeorm": "^0.3.20"
+    "typeorm": "^0.3.20",
+    "ws": "^8.18.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
